@@ -75,10 +75,14 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'top_kebab_db',
+       'USER': 'postgres',
+       'PASSWORD': '628112875q',
+       'HOST': '127.0.0.1',
+       'PORT': '5432',
+   }
 }
 
 
