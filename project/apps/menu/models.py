@@ -6,7 +6,7 @@ class MenuItem(models.Model):
     category = models.ForeignKey(
         'Category', on_delete=models.PROTECT, verbose_name='Категорія')
     description = models.TextField(verbose_name='Опис')
-    photo = models.ImageField(upload_to='menu/', verbose_name='Зображення')
+    photo = models.ImageField(upload_to='menu/', blank=True, verbose_name='Зображення')
     is_publish = models.BooleanField(default=True, verbose_name='Опубліковано?')
     is_delivery = models.BooleanField(default=True, verbose_name='Є доставка?')
 
@@ -24,10 +24,10 @@ class MenuItemChild(models.Model):
     menu_item = models.ForeignKey(
         MenuItem, on_delete=models.PROTECT, verbose_name='Товар')
     price = models.IntegerField(verbose_name='Ціна')
-    photo = models.ImageField(upload_to='menu_item_child/', verbose_name='Зображення')
+    photo = models.ImageField(upload_to='menu_item_child/', blank=True, verbose_name='Зображення')
 
     def __str__(self):
-        return self.subtitle
+        return f'{self.menu_item} {self.subtitle}'
 
     class Meta:
         verbose_name = 'Підпункт меню'
