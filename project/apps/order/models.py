@@ -2,21 +2,26 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 from apps.menu.models import MenuItemChild
+from phone_field import PhoneField
 
 
 class UserAuthenticatedError(Exception):
     ...
 
 
-class OrderManager(models.Manager):
+class OrderQueryset(models.QuerySet):
 
-    def get_or_create_order(self, user: User):
+    def get_or_create(self, defaults=None, **kwargs):
+        user = kwargs.get('user')
+        if not user:
+            raise ValueError('user обовязковий аргумент')
         if user.is_anonymous:
             raise UserAuthenticatedError('Користувач не авторизований')
-        return self.get_or_create(user=user, status='new')
+        return super().get_or_create(defaults=None, status='new', user=user, **kwargs)
 
-    def get_order(self, user):
-        return self.get_or_create_order(user)[0]
+    def create(self, user: User, **kwargs):
+        return self.get_or_create(user=user)[0]
+
 
 class Order(models.Model):
     STATUS_CHOICES = (
@@ -30,7 +35,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = OrderManager()
+    objects = OrderQueryset.as_manager()
 
     def __str__(self):
         return f'{self.user} - {self.status}'
@@ -80,4 +85,20 @@ class OrderItem(models.Model):
 
 
 class Checkout(models.Model):
-    pass
+    DELIVERY_CHOICES = (
+        ('pickup', 'Самовивіз'),
+        ('cafe', 'Доставка кафе')
+    )
+    PAYMENT_CHOICES = (
+        ('card', 'Оплата картою'),
+        ('on_receipt', 'При отриманні')
+    )
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    user_name = models.CharField(max_length=255)
+    phone = PhoneField()
+    delivery = models.CharField(max_length=10, choices=DELIVERY_CHOICES)
+    payment = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
+    is_delivered = models.BooleanField(default=False)
+    is_paid = models.BooleanField(default=False)
+
+    
