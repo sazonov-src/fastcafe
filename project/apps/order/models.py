@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
 from apps.menu.models import MenuItemChild
-from phone_field import PhoneField
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserAuthenticatedError(Exception):
@@ -17,7 +17,7 @@ class OrderQueryset(models.QuerySet):
             raise ValueError('user обовязковий аргумент')
         if user.is_anonymous:
             raise UserAuthenticatedError('Користувач не авторизований')
-        return super().get_or_create(defaults=None, status='new', user=user, **kwargs)
+        return super().get_or_create(defaults=None, status='new', **kwargs)
 
     def create(self, user: User, **kwargs):
         return self.get_or_create(user=user)[0]
@@ -61,6 +61,9 @@ class Order(models.Model):
             defaults={'quantity': quantity if quantity > 0 else 1}
         )
 
+    def is_checkout(self):
+        return
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -95,10 +98,11 @@ class Checkout(models.Model):
     )
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     user_name = models.CharField(max_length=255)
-    phone = PhoneField()
+    phone = PhoneNumberField()
     delivery = models.CharField(max_length=10, choices=DELIVERY_CHOICES)
     payment = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     is_delivered = models.BooleanField(default=False)
     is_paid = models.BooleanField(default=False)
 
-    
+    def __str__(self):
+        return f'{self.order} - {self.user_name}'

@@ -16,5 +16,6 @@ router.register(r'order', OrderViewSet, basename='order')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
+    path('api/v1/manager', include(router.urls)),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
