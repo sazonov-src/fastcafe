@@ -21,13 +21,18 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ('user', 'status', 'created_at', 'updated_at', 'order_items', 'total_price', 'item', 'quantity')
         extra_kwargs = {'status': {'required': False}}
 
-    def save(self):
-        user = self.validated_data['user']
+    def create(self, validated_data):
+        user = validated_data['user']
         order = Order.objects.get(user=user)
         order.add_item(
-            item=self.validated_data['item'],
-            quantity=self.validated_data['quantity'])
+            item=validated_data['item'],
+            quantity=validated_data['quantity'])
         return order
+
+    def update(self, instance, validated_data):
+        instance.quantity = validated_data['quantity']
+        instance.save()
+        return instance
 
 
 class CheckoutSerializer(serializers.ModelSerializer):

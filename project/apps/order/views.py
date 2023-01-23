@@ -15,13 +15,15 @@ class OrderViewSet(viewsets.ViewSet):
     def order(self):
         return Order.objects.get_or_create(user=self.request.user)[0]
 
+    def _get_order_item(self, pk):
+        return get_object_or_404(self.order.order_items, pk=pk)
+
     def list(self, request):
         serializer = OrderSerializer(self.order)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        instance = get_object_or_404(self.order.order_items, pk=pk)
-        serializer = OrderItemSerializer(instance)
+        serializer = OrderItemSerializer(self._get_order_item(pk=pk))
         return Response(serializer.data)
 
     def create(self, request):
@@ -32,11 +34,17 @@ class OrderViewSet(viewsets.ViewSet):
         return Response(request.data)
 
     def update(self, request, pk=None):
-        return self.create(request)
+        order_item = self._get_order_item(pk=pk)
+        request.data['user'] = self.order.user.pk
+        request.data['item'] = order_item.item.pk
+        serializer = OrderSerializer(order_item, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(request.data)
 
     def destroy(self, request, pk=None):
-        instance = get_object_or_404(self.order.order_items, pk=pk)
-        instance.delete()
+        order_item = self._get_order_item(pk=pk)
+        order_item.delete()
         return Response({'massage': 'Товар видалено'})
 
     @action(detail=False, methods=['get', 'post', 'put'])
@@ -61,3 +69,7 @@ class OrderViewSet(viewsets.ViewSet):
         if request.method == 'GET':
             serializer = CheckoutSerializer(checkout)
             return Response(serializer.data)
+
+
+class OrderManagerViewSet(viewsets.ModelViewSet):
+    pass
