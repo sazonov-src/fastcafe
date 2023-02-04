@@ -10,17 +10,7 @@ class UserAuthenticatedError(Exception):
 
 
 class OrderQueryset(models.QuerySet):
-
-    def get_or_create(self, defaults=None, **kwargs):
-        user = kwargs.get('user')
-        if not user:
-            raise ValueError('user обовязковий аргумент')
-        if user.is_anonymous:
-            raise UserAuthenticatedError('Користувач не авторизований')
-        return super().get_or_create(defaults=None, status='new', **kwargs)
-
-    def create(self, user: User, **kwargs):
-        return self.get_or_create(user=user)[0]
+    pass
 
 
 class Order(models.Model):
