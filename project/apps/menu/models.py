@@ -44,3 +44,13 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категорія'
         verbose_name_plural = 'Категорії'
+
+
+def get_test_item(num=1):
+    category = Category.objects.create(title='категорія')
+    menu_item = MenuItem.objects.create(title='тестовий item',
+                                        category=category,
+                                        description='опис')
+    return MenuItemChild.objects.create(subtitle='Test Item'+str(num),
+                                                 menu_item=menu_item,
+                                                 price=25)

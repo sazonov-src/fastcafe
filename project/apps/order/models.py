@@ -1,16 +1,10 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from apps.menu.models import MenuItemChild
+from django.utils.translation import gettext_lazy as _
+from apps.menu.models import MenuItemChild, MenuItem, Category
 from phonenumber_field.modelfields import PhoneNumberField
-
-
-class UserAuthenticatedError(Exception):
-    ...
-
-
-class OrderQueryset(models.QuerySet):
-    pass
 
 
 class Order(models.Model):
@@ -25,8 +19,6 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = OrderQueryset.as_manager()
-
     def __str__(self):
         return f'{self.user} - {self.status}'
 
@@ -34,22 +26,22 @@ class Order(models.Model):
         return iter(self.orderitem_set.all())
 
     @property
-    def order_items(self):
-        return self.orderitem_set.all()
+    def items(self):
+        return [order_item.item for order_item in self.orderitem_set.all()]
 
     @property
     def total_price(self):
         return sum(order_item.total_price for order_item in self)
 
-    def del_item(self, item: MenuItemChild):
-        if item in self.orderitem_set.all():
-            return self.orderitem_set.get(item=item).delete()
-
     def add_item(self, item: MenuItemChild, quantity: int):
-        self.orderitem_set.update_or_create(
+        return self.orderitem_set.update_or_create(
             item=item,
-            defaults={'quantity': quantity if quantity > 0 else 1}
-        )
+            defaults={'quantity': quantity if quantity > 0 else 1})
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.status = 'new'
+        super().save(*args, **kwargs)
 
     def is_checkout(self):
         return
@@ -72,9 +64,10 @@ class OrderItem(models.Model):
         self.save()
 
     def minus_quantity(self):
-        if self.quantity > 1:
-            self.quantity -= 1
-            self.save()
+        if self.quantity == 1:
+            raise ValueError("Quantity can't be less than 1.")
+        self.quantity -= 1
+        self.save()
 
 
 class Checkout(models.Model):
