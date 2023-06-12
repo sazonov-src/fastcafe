@@ -1,12 +1,13 @@
 from django.db import models
 
+
 class MenuItem(models.Model):
     """Цей клас містить загальні дані про товар"""
     title = models.CharField(max_length=255, verbose_name='Назва')
     category = models.ForeignKey(
         'Category', on_delete=models.PROTECT, verbose_name='Категорія')
     description = models.TextField(verbose_name='Опис')
-    photo = models.ImageField(upload_to='menu/', blank=True, verbose_name='Зображення')
+    photo = models.ImageField(upload_to='app_menu/', blank=True, verbose_name='Зображення')
     is_publish = models.BooleanField(default=True, verbose_name='Опубліковано?')
     is_delivery = models.BooleanField(default=True, verbose_name='Є доставка?')
 

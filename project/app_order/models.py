@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from apps.menu.models import MenuItemChild, MenuItem, Category
+from app_menu.models import MenuItemChild, MenuItem, Category
 from phonenumber_field.modelfields import PhoneNumberField
 
 

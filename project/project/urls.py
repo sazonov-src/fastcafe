@@ -13,7 +13,7 @@ router = routers.DefaultRouter()
 router.register(r'item_child', ItemChildViewSet)
 router.register(r'item', ItemViewSet)
 router.register(r'category', CategoryViewSet)
-router.register(r'order', OrderViewSet, basename='order')
+router.register(r'app_order', OrderViewSet, basename='app_order')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

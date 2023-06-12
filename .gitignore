@@ -1,2 +1,4 @@
-/project/apps/menu/migrations/
+/project/app_menu/migrations/
+/project/app_order/migrations/
 /project/media/
+/project/db.sqlite3

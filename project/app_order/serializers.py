@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.fields import IntegerField
 from rest_framework.relations import PrimaryKeyRelatedField
-from apps.menu.models import MenuItemChild
-from apps.order.models import *
+from app_menu.models import MenuItemChild
+from app_order.models import *
+from app_order.services import OrderService
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -38,4 +39,4 @@ class OrderSerializer(serializers.ModelSerializer):
 class CheckoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Checkout
-        fields = ('order', 'user_name', 'phone', 'delivery', 'payment')
+        fields = ('app_order', 'user_name', 'phone', 'delivery', 'payment')
