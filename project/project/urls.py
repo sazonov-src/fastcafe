@@ -2,11 +2,10 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from apps.menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
-from apps.order.views import OrderViewSet
-from project import settings
-from project.view import auth_logout
-
+from app_menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
+from app_order.views import OrderViewSet
+from . import settings
+from .view import auth_logout
 
 router = routers.DefaultRouter()
 

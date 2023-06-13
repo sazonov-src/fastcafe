@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.menu.models import *
+from app_menu.models import *
 
 
 class ItemChildSerializer(serializers.ModelSerializer):

@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     "phonenumber_field",
     'social_django',
-    'oauth2_provider',
 
     'apps.menu',
     'apps.order',
@@ -83,15 +82,22 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': 'top_kebab_db',
+#        'USER': 'postgres',
+#        'PASSWORD': '628112875q',
+#        'HOST': '127.0.0.1',
+#        'PORT': '5432',
+#    }
+# }
+
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'top_kebab_db',
-       'USER': 'postgres',
-       'PASSWORD': '628112875q',
-       'HOST': '127.0.0.1',
-       'PORT': '5432',
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -111,10 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    {
-        'NAME': 'django.core.validators.MinValueValidator',
-    },
-
 ]
 
 

@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, action
 from rest_framework.generics import *
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from apps.menu.models import *
-from apps.menu import serializers
+from app_menu.models import *
+from app_menu import serializers
 
 
 class ItemChildViewSet(ModelViewSet):
