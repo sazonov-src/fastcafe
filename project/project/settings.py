@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     "phonenumber_field",
     'social_django',
 
-    'apps.menu',
-    'apps.order',
+    'app_menu',
+    'app_order',
 ]
 
 MIDDLEWARE = [
