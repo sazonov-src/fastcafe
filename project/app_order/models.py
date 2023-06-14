@@ -25,6 +25,10 @@ class Order(models.Model):
     def __repr__(self):
         return f"<{self.user.username} {self.status}>"
 
+    @property
+    def total_price(self):
+        return sum(all_.total_price for all_ in self.orderitem_set.all())
+
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -32,6 +36,10 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     objects = models.Manager()
+
+    @property
+    def total_price(self):
+        return self.item.price * self.quantity
 
 
 class Checkout(models.Model):

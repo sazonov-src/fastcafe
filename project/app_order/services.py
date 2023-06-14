@@ -4,6 +4,10 @@ from app_menu.models import MenuItemChild
 from app_order.models import Order, OrderItem
 
 
+def validate_quantity(quantity: int):
+    pass
+
+
 def update_or_create_order(
         user: User,
         item: MenuItemChild,
@@ -16,4 +20,3 @@ def update_or_create_order(
         item=item,
         defaults={'quantity': quantity})
     return order, order_item
-

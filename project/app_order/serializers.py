@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.fields import IntegerField
+from rest_framework.fields import IntegerField, DecimalField
 from rest_framework.relations import PrimaryKeyRelatedField
 from app_menu.models import MenuItemChild
 from app_order.models import *
@@ -13,13 +13,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(many=True, required=False)
+    orderitem_set = OrderItemSerializer(many=True, required=False)
     item = PrimaryKeyRelatedField(queryset=MenuItemChild.objects.all(), write_only=True)
     quantity = IntegerField(min_value=1, write_only=True)
 
     class Meta:
         model = Order
-        fields = ('pk', 'user', 'status', 'created_at', 'updated_at', 'order_items', 'total_price', 'item', 'quantity')
+        fields = (
+            'pk', 'user', 'status', 'created_at', 'updated_at', 'orderitem_set', 'total_price', 'item', 'quantity'
+        )
         extra_kwargs = {'status': {'required': False}}
 
     def save(self, **kwargs):

@@ -36,5 +36,8 @@ class OrderTestCase(TestCase):
         # створюєм нове замовлення
         assert is_created_order is False  # замовлення взяте
 
-    def test_two(self):
-        assert len(Order.objects.all()) == 0
+    def test_total_price(self):
+        (order, _), _ = update_or_create_order(user=self.user, item=self.item)
+        assert order.total_price == 25
+        (order, _), _ = update_or_create_order(user=self.user, item=self.item2, quantity=2)
+        assert order.total_price == 75
