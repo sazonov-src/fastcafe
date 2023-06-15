@@ -5,7 +5,13 @@ from app_order.models import Order, OrderItem
 
 
 def validate_quantity(quantity: int):
-    pass
+    try:
+        quantity = int(quantity)
+        if quantity <= 0:
+            raise ValueError
+        return quantity
+    except ValueError:
+        return 1
 
 
 def update_or_create_order(
@@ -18,5 +24,5 @@ def update_or_create_order(
     order_item = OrderItem.objects.update_or_create(
         order=order[0],
         item=item,
-        defaults={'quantity': quantity})
+        defaults={'quantity': validate_quantity(quantity)})
     return order, order_item

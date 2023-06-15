@@ -32,13 +32,7 @@ class OrderViewSet(viewsets.ViewSet):
         return Response(request.data)
 
     def update(self, request, pk=None):
-        order_item = get_object_or_404(self.order.orderitem_set.all(), pk=pk)
-        request.data['user'] = self.order.user.pk
-        request.data['item'] = order_item.item.pk
-        serializer = OrderSerializer(order_item, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(request.data)
+        return self.create(request)
 
     def destroy(self, request, pk=None):
         order_item = get_object_or_404(self.order.orderitem_set.all(), pk=pk)

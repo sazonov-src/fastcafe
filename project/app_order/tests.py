@@ -4,7 +4,7 @@ from django.test import TestCase
 from app_menu.models import get_test_item
 from .models import Order, OrderItem, Checkout
 
-from .services import update_or_create_order
+from .services import update_or_create_order, validate_quantity
 
 
 class OrderTestCase(TestCase):
@@ -41,3 +41,13 @@ class OrderTestCase(TestCase):
         assert order.total_price == 25
         (order, _), _ = update_or_create_order(user=self.user, item=self.item2, quantity=2)
         assert order.total_price == 75
+
+    def test_validate_quantity(self):
+        assert validate_quantity(0) == 1
+        assert validate_quantity('hello') == 1
+        assert validate_quantity(-10) == 1
+        assert validate_quantity(1) == 1
+        assert validate_quantity('10') == 10
+        assert validate_quantity('-10') == 1
+        assert validate_quantity('') == 1
+
