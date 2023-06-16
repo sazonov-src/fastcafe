@@ -26,3 +26,12 @@ def update_or_create_order(
         item=item,
         defaults={'quantity': validate_quantity(quantity)})
     return order, order_item
+
+
+def get_new_order(user: User):
+    return Order.objects.get(user=user, status='new')
+
+
+def get_new_order_items(user: User):
+    return get_new_order(user).orderitem_set.all()
+
