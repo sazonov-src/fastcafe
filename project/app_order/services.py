@@ -29,14 +29,20 @@ def update_or_create_order(
     return order, order_item
 
 
+def delete_order_item(order_item: OrderItem) -> None:
+    order = order_item.order
+    order_item.delete()
+    if not order.count_order_items:
+        order.delete()
+
+
 def get_new_order(user: User):
     return Order.objects.get(user=user.pk, status='new')
 
 
 def get_new_order_items(user: User):
     try:
-        get_new_order(user)
+        return get_new_order(user).orderitem_set.all()
     except ObjectDoesNotExist:
         return []
-    return get_new_order(user).orderitem_set.all()
 

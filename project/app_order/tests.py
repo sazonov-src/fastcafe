@@ -5,7 +5,7 @@ from app_menu.models import get_test_item
 from .models import Order, OrderItem
 from app_checkout.models import Checkout
 
-from .services import update_or_create_order, validate_quantity
+from .services import update_or_create_order, validate_quantity, delete_order_item, get_new_order
 
 
 class OrderTestCase(TestCase):
@@ -37,13 +37,25 @@ class OrderTestCase(TestCase):
         # створюєм нове замовлення
         assert is_created_order is False  # замовлення взяте
 
+    def test_delete_order_item(self):
+        (order, is_created_order), (item, is_created_item) = update_or_create_order(user=self.user, item=self.item)
+        assert (order.count_order_items, is_created_item) == (1, True)
+        delete_order_item(order_item=item)
+        with self.assertRaises(Order.DoesNotExist):
+            get_new_order(user=self.user)
+        _, (item, _) = update_or_create_order(user=self.user, item=self.item)
+        update_or_create_order(user=self.user, item=self.item2)
+        delete_order_item(order_item=item)
+        assert get_new_order(user=self.user).count_order_items == 1
+
     def test_total_price(self):
         (order, _), _ = update_or_create_order(user=self.user, item=self.item)
         assert order.total_price == 25
         (order, _), _ = update_or_create_order(user=self.user, item=self.item2, quantity=2)
         assert order.total_price == 75
 
-    def test_validate_quantity(self):
+    @staticmethod
+    def test_validate_quantity():
         assert validate_quantity(0) == 1
         assert validate_quantity('hello') == 1
         assert validate_quantity(-10) == 1

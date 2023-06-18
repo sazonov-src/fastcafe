@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from app_order.models import Order
 from app_order.serializers import OrderSerializer, OrderItemSerializer
-from app_order.services import get_new_order_items, get_new_order
+from app_order.services import get_new_order_items, get_new_order, delete_order_item
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -16,10 +16,13 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return get_new_order_items(self.request.user)
+        return get_new_order_items(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def perform_destroy(self, instance):
+        delete_order_item(order_item=instance)
 
 
 class OrderNewView(APIView):
@@ -29,6 +32,6 @@ class OrderNewView(APIView):
             serializer = OrderSerializer(get_new_order(request.user))
         except ObjectDoesNotExist:
             return Response(
-                {'not_found': 'Додайте хочаб одну позицію в замовлення'},
+                {'detail': 'Додайте хочаб одну позицію в замовлення'},
                 status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.data)

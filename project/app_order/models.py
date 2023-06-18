@@ -25,6 +25,10 @@ class Order(models.Model):
     def total_price(self):
         return sum(all_.total_price for all_ in self.orderitem_set.all())
 
+    @property
+    def count_order_items(self):
+        return len(self.orderitem_set.all())
+
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
