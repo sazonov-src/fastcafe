@@ -8,18 +8,18 @@ from app_menu import serializers
 
 
 class ItemChildViewSet(ModelViewSet):
-    queryset = MenuItemChild.objects.all()
+    queryset = MenuItem.objects.all()
     serializer_class = serializers.ItemChildSerializer
 
 
 class ItemViewSet(ModelViewSet):
-    queryset = MenuItem.objects.all()
+    queryset = MenuItemGeneral.objects.all()
     serializer_class = serializers.ItemSerializer
 
     @action(methods=['get'], detail=True)
     def item_child(self, request, pk):
         title = self.queryset.get(pk=pk).title
-        queryset = MenuItemChild.objects.filter(menu_item=pk)
+        queryset = MenuItem.objects.filter(menu_item=pk)
         return Response({
             title: queryset.values()
         })

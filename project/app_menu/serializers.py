@@ -4,12 +4,12 @@ from app_menu.models import *
 
 class ItemChildSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MenuItemChild
+        model = MenuItem
         fields = '__all__'
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MenuItem
+        model = MenuItemGeneral
         fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):

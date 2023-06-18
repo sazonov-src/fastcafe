@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from app_menu.models import MenuItemChild
+from app_menu.models import MenuItem
 from app_order.models import Order, OrderItem
 
 
@@ -17,11 +17,11 @@ def validate_quantity(quantity: int):
 
 def update_or_create_order(
         user: User,
-        item: MenuItemChild,
+        item: MenuItem,
         quantity: int = 1
 ) -> tuple[tuple[Order, bool], tuple[OrderItem, bool]]:
 
-    order = Order.objects.get_or_create(user=user, status='new')
+    order = Order.objects.get_or_create(user=user, created=False)
     order_item = OrderItem.objects.update_or_create(
         order=order[0],
         item=item,
@@ -37,7 +37,7 @@ def delete_order_item(order_item: OrderItem) -> None:
 
 
 def get_new_order(user: User):
-    return Order.objects.get(user=user.pk, status='new')
+    return Order.objects.get(user=user.pk, created=False)
 
 
 def get_new_order_items(user: User):

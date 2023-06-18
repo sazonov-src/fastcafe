@@ -23,7 +23,7 @@ class OrderTestCase(TestCase):
         assert len(order.orderitem_set.all()) == 1  # в замовленні одна позиція
         assert len(Order.objects.all()) == 1
         assert item.quantity == 1
-        order.status = 'created'
+        order.created = True
         order.save()
         (order, is_created_order), (item, _) = update_or_create_order(user=self.user, item=self.item2, quantity=2)
         assert is_created_order is True

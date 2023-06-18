@@ -1,18 +1,13 @@
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
-from app_menu.models import MenuItemChild
+from app_menu.models import MenuItem
 
 
 class Order(models.Model):
-    STATUS_CHOICES = (
-        ('new', 'New'),
-        ('created', 'Created'),
-        ('processing', 'Processing'),
-        ('done', 'Done'),
-    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='new')
+    created = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -32,7 +27,7 @@ class Order(models.Model):
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    item = models.ForeignKey(MenuItemChild, on_delete=models.CASCADE)
+    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     objects = models.Manager()
@@ -40,5 +35,3 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         return self.item.price * self.quantity
-
-
