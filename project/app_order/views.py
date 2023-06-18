@@ -1,5 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, status
-from rest_framework.decorators import action
+
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -24,5 +25,10 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 class OrderNewView(APIView):
 
     def get(self, request):
-        serializer = OrderSerializer(get_new_order(request.user))
+        try:
+            serializer = OrderSerializer(get_new_order(request.user))
+        except ObjectDoesNotExist:
+            return Response(
+                {'not_found': 'Додайте хочаб одну позицію в замовлення'},
+                status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.data)

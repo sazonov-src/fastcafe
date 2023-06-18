@@ -2,7 +2,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from app_menu.models import get_test_item
-from .models import Order, OrderItem, Checkout
+from .models import Order, OrderItem
+from app_checkout.models import Checkout
 
 from .services import update_or_create_order, validate_quantity
 

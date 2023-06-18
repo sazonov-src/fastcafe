@@ -1,7 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import IntegerField, DecimalField
-from rest_framework.relations import PrimaryKeyRelatedField
-from app_menu.models import MenuItemChild
 from app_order.models import *
 from app_order.services import update_or_create_order
 

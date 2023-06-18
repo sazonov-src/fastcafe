@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'app_menu',
     'app_order',
+    'app_checkout.apps.AppCheckoutConfig',
 ]
 
 MIDDLEWARE = [
