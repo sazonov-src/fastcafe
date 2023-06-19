@@ -10,9 +10,10 @@ def get_checkout(user: User):
     return Checkout.objects.get(order=order)
 
 
-def update_or_create_checkout(user: User, **kwargs) -> tuple[Checkout, bool]:
+def create_new_checkout(user: User, **kwargs) -> Checkout:
     order = get_new_order(user)
     [kwargs.pop(key, None) for key in ('order', 'is_paid', 'done')]
-    return Checkout.objects.update_or_create(
-        order=order,
-        defaults=kwargs)
+    checkout = Checkout.objects.create(order=order, **kwargs)
+    order.created = True
+    order.save()
+    return checkout

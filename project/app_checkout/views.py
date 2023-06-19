@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from app_checkout.models import Checkout
 from app_checkout.serializers import CheckoutSerializer
-from app_checkout.services import get_checkout, update_or_create_checkout
+from app_checkout.services import get_checkout, create_new_checkout
 from app_order.models import Order
 
 
