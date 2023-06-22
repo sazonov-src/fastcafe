@@ -7,16 +7,10 @@ from app_order.models import Order
 
 
 class Checkout(models.Model):
-
-    PAYMENT_CHOICES = (
-        ('card', 'Оплата картою'),
-        ('on_receipt', 'При отриманні')
-    )
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     user_name = models.CharField(max_length=255)
     phone = PhoneNumberField(region='UA')
-    payment = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
-    is_paid = models.BooleanField(default=False)
+    cart_pay = models.BooleanField(default=True)
 
     objects = models.Manager()
 

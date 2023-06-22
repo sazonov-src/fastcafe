@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 
-from app_order.serializers import OrderSerializer, OrderItemSerializer, ManagerOrderSerializer, \
+from app_order.serializers import NewOrderSerializer, NewOrderItemSerializer, ManagerOrderSerializer, \
     ManagerOrderItemSerializer
 from app_order.services.manager import *
 from app_order.services.new_order import *
@@ -31,7 +31,7 @@ class ManageOrderViewSet(mixins.RetrieveModelMixin,
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
-    serializer_class = OrderItemSerializer
+    serializer_class = NewOrderItemSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -49,7 +49,7 @@ class OrderNewView(APIView):
 
     def get(self, request):
         try:
-            serializer = OrderSerializer(get_new_order(request.user))
+            serializer = NewOrderSerializer(get_new_order(request.user))
         except ObjectDoesNotExist:
             return Response(
                 {'detail': 'Додайте хочаб одну позицію в замовлення'},

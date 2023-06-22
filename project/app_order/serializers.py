@@ -6,7 +6,7 @@ from app_order.services.manager import mark_order_as_done
 from app_order.services.new_order import update_or_create_new_order
 
 
-class OrderItemSerializer(serializers.ModelSerializer):
+class NewOrderItemSerializer(serializers.ModelSerializer):
     total_price = serializers.FloatField(read_only=True)
 
     class Meta:
@@ -20,7 +20,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             quantity=self.validated_data['quantity'])
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class NewOrderSerializer(serializers.ModelSerializer):
     checkout = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -34,7 +34,7 @@ class ManagerOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
-        read_only_fields = ('created', 'user')
+        read_only_fields = ('created', 'user', 'is_paid')
 
     def update(self, instance, validated_data):
         mark_order_as_done(

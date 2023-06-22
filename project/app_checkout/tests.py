@@ -19,10 +19,10 @@ class CheckoutTestCase(TestCase):
         with self.assertRaises(Order.DoesNotExist):
             #  Помилка виникає тому шо Order не було створено
             create_new_checkout(
-                user=self.user, user_name='Vasia', payment='card', phone='+30987777777')
+                user=self.user, user_name='Vasia', phone='+30987777777')
         update_or_create_new_order(user=self.user, item=self.item)
         checkout = create_new_checkout(
-            user=self.user, user_name='Vasia', payment='card')
+            user=self.user, user_name='Vasia')
         assert checkout.user_name == 'Vasia'
         assert checkout.order.created is True
 
@@ -35,7 +35,7 @@ class CheckoutTestCase(TestCase):
             # виключиння виникфє тому що Checkout не створено
             get_checkout(self.user)
         checkout = create_new_checkout(
-            user=self.user, user_name='Vasia', payment='card', phone='+30987777777', done=False)
+            user=self.user, user_name='Vasia', phone='+30987777777', done=False)
         assert checkout.user_name == 'Vasia'
         assert checkout.order.done is False
         with self.assertRaises(Order.DoesNotExist):
