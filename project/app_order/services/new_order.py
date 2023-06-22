@@ -15,7 +15,7 @@ def validate_quantity(quantity: int):
         return 1
 
 
-def update_or_create_order(
+def update_or_create_new_order(
         user: User,
         item: MenuItem,
         quantity: int = 1
@@ -29,7 +29,7 @@ def update_or_create_order(
     return order, order_item
 
 
-def delete_order_item(order_item: OrderItem) -> None:
+def delete_new_order_item(order_item: OrderItem) -> None:
     order = order_item.order
     order_item.delete()
     if not order.count_order_items:
@@ -40,9 +40,8 @@ def get_new_order(user: User):
     return Order.objects.get(user=user.pk, created=False)
 
 
-def get_new_order_items(user: User):
+def get_new_orderitems_queryset(user: User):
     try:
         return get_new_order(user).orderitem_set.all()
     except ObjectDoesNotExist:
         return []
-

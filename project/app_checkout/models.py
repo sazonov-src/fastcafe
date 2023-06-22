@@ -17,7 +17,6 @@ class Checkout(models.Model):
     phone = PhoneNumberField(region='UA')
     payment = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     is_paid = models.BooleanField(default=False)
-    done = models.BooleanField(default=False)
 
     objects = models.Manager()
 

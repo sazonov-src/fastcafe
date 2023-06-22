@@ -10,6 +10,7 @@ class Order(models.Model):
     created = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    done = models.BooleanField(default=False)
 
     objects = models.Manager()
 
@@ -17,12 +18,16 @@ class Order(models.Model):
         return f"<{self.user.username} {self.status}>"
 
     @property
+    def order_items(self):
+        return self.orderitem_set.all()
+
+    @property
     def total_price(self):
-        return sum(all_.total_price for all_ in self.orderitem_set.all())
+        return sum(all_.total_price for all_ in self.order_items)
 
     @property
     def count_order_items(self):
-        return len(self.orderitem_set.all())
+        return len(self.order_items)
 
     
 class OrderItem(models.Model):

@@ -5,7 +5,7 @@ from rest_framework import routers
 
 from app_checkout.views import CheckoutAPI
 from app_menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
-from app_order.views import OrderItemViewSet, OrderNewView
+from app_order.views import OrderItemViewSet, OrderNewView, ManageOrderViewSet
 from . import settings
 from .view import auth_logout
 
@@ -14,17 +14,19 @@ router.register(r'item_child', ItemChildViewSet)
 router.register(r'item', ItemViewSet)
 router.register(r'category', CategoryViewSet)
 
-
 new_order = routers.DefaultRouter()
 new_order.register(r'', OrderItemViewSet, basename='new_order_items')
+
+manager = routers.DefaultRouter()
+manager.register(r'orders', ManageOrderViewSet, basename='manager_orders')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
-    path('api/v1/manager/', include(router.urls)),
     path('api/v1/new_order/', OrderNewView.as_view()),
     path('api/v1/new_order/items/', include(new_order.urls)),
     path('api/v1/new_order/checkout/', CheckoutAPI.as_view()),
+    path('api/v1/manager/', include(manager.urls)),
 
     path(f'api/v1/auth_logout/', auth_logout),
 

@@ -1,14 +1,33 @@
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
+from rest_framework.decorators import action
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
 
-from app_order.models import Order
-from app_order.serializers import OrderSerializer, OrderItemSerializer
-from app_order.services import get_new_order_items, get_new_order, delete_order_item
+from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
+
+from app_order.serializers import OrderSerializer, OrderItemSerializer, ManagerOrderSerializer, \
+    ManagerOrderItemSerializer
+from app_order.services.manager import *
+from app_order.services.new_order import *
+
+
+class ManageOrderViewSet(mixins.RetrieveModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.ListModelMixin,
+                         GenericViewSet):
+    serializer_class = ManagerOrderSerializer
+
+    def get_queryset(self):
+        return get_in_process_orders_queryset()
+
+    @action(detail=True)
+    def items(self, request, pk=None):
+        serializer = ManagerOrderItemSerializer(
+            get_order_items_queryset(order_pk=pk), many=True,)
+        return Response(serializer.data)
 
 
 class OrderItemViewSet(viewsets.ModelViewSet):
@@ -16,16 +35,17 @@ class OrderItemViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return get_new_order_items(user=self.request.user)
+        return get_new_orderitems_queryset(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     def perform_destroy(self, instance):
-        delete_order_item(order_item=instance)
+        delete_new_order_item(order_item=instance)
 
 
 class OrderNewView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
