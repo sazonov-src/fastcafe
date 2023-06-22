@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
+from django.http import response
 from django.test import TestCase
 
 # Create your tests here.
 from app_checkout.models import Checkout
-from app_checkout.services import get_checkout, create_new_checkout
+from app_checkout.services import get_checkout, create_new_checkout, get_manage_checkout
 from app_menu.models import get_test_item
 from app_order.models import Order
 from app_order.services.new_order import update_or_create_new_order
@@ -35,9 +36,16 @@ class CheckoutTestCase(TestCase):
             # виключиння виникфє тому що Checkout не створено
             get_checkout(self.user)
         checkout = create_new_checkout(
-            user=self.user, user_name='Vasia', phone='+30987777777', done=False)
+            user=self.user, user_name='Vasia', phone='+30987777777')
         assert checkout.user_name == 'Vasia'
         assert checkout.order.done is False
         with self.assertRaises(Order.DoesNotExist):
             # так як замовлення вже оформлено воно стає created
             get_checkout(self.user)
+
+    def test_get_manage_checkout(self):
+        (self.order, _), _ = update_or_create_new_order(user=self.user, item=self.item)
+        with self.assertRaises(response.Http404):
+            get_manage_checkout(order_pk=self.order.pk)
+        create_new_checkout(self.user, user_name="Vasia", phone='+30987777777')
+        assert get_manage_checkout(order_pk=self.order.pk).pk == self.order.pk
