@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from app_order.models import Order
 
 
@@ -6,7 +8,7 @@ def get_in_process_orders_queryset():
 
 
 def get_order_items_queryset(order_pk: int):
-    order = Order.objects.get(pk=order_pk)
+    order = get_object_or_404(Order, pk=order_pk)
     return order.orderitem_set.all()
 
 

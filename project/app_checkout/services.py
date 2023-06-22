@@ -6,9 +6,9 @@ from app_order.services.manager import get_in_process_orders_queryset
 from app_order.services.new_order import get_new_order
 
 
-def get_checkout(user: User) -> Checkout:
+def get_new_checkout(user: User) -> Checkout:
     order = get_new_order(user=user)
-    return Checkout.objects.get(order=order)
+    return get_object_or_404(Checkout, order=order)
 
 
 def create_new_checkout(user: User, **kwargs) -> Checkout:

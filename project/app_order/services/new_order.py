@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 from app_menu.models import MenuItem
 from app_order.models import Order, OrderItem
@@ -37,11 +37,9 @@ def delete_new_order_item(order_item: OrderItem) -> None:
 
 
 def get_new_order(user: User):
-    return Order.objects.get(user=user.pk, created=False)
+    return get_object_or_404(Order, user=user.pk, created=False)
 
 
 def get_new_orderitems_queryset(user: User):
-    try:
-        return get_new_order(user).orderitem_set.all()
-    except ObjectDoesNotExist:
-        return []
+    return get_new_order(user).orderitem_set.all()
+

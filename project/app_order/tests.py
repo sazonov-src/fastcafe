@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.http import Http404
 from django.test import TestCase
 
 from app_menu.models import get_test_item
@@ -40,7 +41,7 @@ class OrderTestCase(TestCase):
         (order, is_created_order), (item, is_created_item) = update_or_create_new_order(user=self.user, item=self.item)
         assert (order.count_order_items, is_created_item) == (1, True)
         delete_new_order_item(order_item=item)
-        with self.assertRaises(Order.DoesNotExist):
+        with self.assertRaises(Http404):
             get_new_order(user=self.user)
         _, (item, _) = update_or_create_new_order(user=self.user, item=self.item)
         update_or_create_new_order(user=self.user, item=self.item2)

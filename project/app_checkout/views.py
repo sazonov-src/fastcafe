@@ -1,25 +1,16 @@
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from app_checkout.models import Checkout
 from app_checkout.serializers import NewCheckoutSerializer, ManageCheckoutSerializer
-from app_checkout.services import get_checkout, get_manage_checkout
-from app_order.models import Order
+from app_checkout.services import get_new_checkout, get_manage_checkout
 
 
-class CheckoutAPI(APIView):
+class NewCheckoutAPI(APIView):
     serializer = NewCheckoutSerializer
 
     def get(self, request):
-        try:
-            serializer = self.serializer(get_checkout(request.user))
-        except Order.DoesNotExist:
-            return Response(
-                {'not_found': 'Створіть спочатку замовлення'},
-                status=status.HTTP_404_NOT_FOUND)
-        except Checkout.DoesNotExist:
-            return Response({})
+        serializer = self.serializer(
+            get_new_checkout(request.user))
         return Response(serializer.data)
 
     def post(self, request):
@@ -29,7 +20,7 @@ class CheckoutAPI(APIView):
         return Response(serializer.validated_data)
 
 
-class ManagerAPIView(APIView):
+class ManagerCheckoutAPIView(APIView):
     serializer = ManageCheckoutSerializer
 
     def get(self, request, pk):

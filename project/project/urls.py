@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from app_checkout.views import CheckoutAPI, ManagerAPIView
+from app_checkout.views import NewCheckoutAPI, ManagerCheckoutAPIView
 from app_menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
 from app_order.views import OrderItemViewSet, OrderNewView, ManageOrderViewSet
 from . import settings
@@ -25,9 +25,9 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/new_order/', OrderNewView.as_view()),
     path('api/v1/new_order/items/', include(new_order.urls)),
-    path('api/v1/new_order/checkout/', CheckoutAPI.as_view()),
+    path('api/v1/new_order/checkout/', NewCheckoutAPI.as_view()),
     path('api/v1/manager/orders/', include(manager.urls)),
-    path('api/v1/manager/orders/<int:pk>/checkout', ManagerAPIView.as_view()),
+    path('api/v1/manager/orders/<int:pk>/checkout', ManagerCheckoutAPIView.as_view()),
 
     path(f'api/v1/auth_logout/', auth_logout),
 
