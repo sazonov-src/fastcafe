@@ -15,6 +15,8 @@ from pathlib import Path
 # from django.contrib.auth.models import User
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from project.utils import env
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -27,8 +29,11 @@ SECRET_KEY = 'django-insecure-mai%w%a6q@x#sid!m0j5uz)a)0!v2_g-e)_c(zf#8&psmk)wlk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'c2d7-109-108-232-220.ngrok-free.app',
+]
 
+CSRF_TRUSTED_ORIGINS = ['https://c2d7-109-108-232-220.ngrok-free.app']
 
 # Application definition
 
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     'app_menu',
     'app_order',
     'app_checkout.apps.AppCheckoutConfig',
+    'app_payment.apps.AppPaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -204,3 +210,18 @@ SOCIAL_AUTH_DISCONNECT_PIPELINE = (
 )
 
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+
+LIQPAY_PUBLIC_KEY = "sandbox_i63394948889"
+LIQPAY_SECRET_KEY = env('LIQPAY_SECRET_KEY')
+LIQPAY_DATA = {
+    "result_url": f"https://{ALLOWED_HOSTS[0]}/api/v1/new_order/pay_callback/",
+    "server_url": f"https://{ALLOWED_HOSTS[0]}/api/v1/new_order/pay_callback/",
+    "action": "pay",
+    "amount": "1",
+    "currency": "UAH",
+    "description": "description\n text",
+    "order_id": "1",
+    "version": "3",
+    "language": "uk",
+}
+

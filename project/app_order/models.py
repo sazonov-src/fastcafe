@@ -6,7 +6,7 @@ from app_menu.models import MenuItem
 
 class Order(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user: User = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,9 +32,9 @@ class Order(models.Model):
 
     
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    order: Order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    item: MenuItem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity: int = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     objects = models.Manager()
 

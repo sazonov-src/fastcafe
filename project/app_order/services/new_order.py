@@ -31,15 +31,21 @@ def update_or_create_new_order(
 
 def delete_new_order_item(order_item: OrderItem) -> None:
     order = order_item.order
+    if len(order.order_items) == 1:
+        return order.delete()
     order_item.delete()
-    if not order.count_order_items:
-        order.delete()
 
 
-def get_new_order(user: User):
+def get_new_order(user: User) -> Order:
     return get_object_or_404(Order, user=user.pk, created=False)
 
 
 def get_new_orderitems_queryset(user: User):
     return get_new_order(user).orderitem_set.all()
+
+
+def set_created_status_new_order(order: Order):
+    order.created = True
+    order.save()
+
 

@@ -27,6 +27,10 @@ class MenuItem(models.Model):
     photo = models.ImageField(upload_to='menu_item/', blank=True, verbose_name='Зображення')
     is_published = models.BooleanField(default=True, verbose_name='Опубліковано?')
 
+    @property
+    def title(self):
+        return f"{self.menu_item.title} {self.subtitle}"
+
     def __str__(self):
         return f'{self.menu_item} {self.subtitle}'
 
