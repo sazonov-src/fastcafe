@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from liqpay import LiqPay
 from rest_framework.exceptions import ValidationError
 
-
+from app_order.models import Order
 from app_order.services.new_order import get_new_order
 from app_payment.models import PaymentCallback
 from project import settings
@@ -21,12 +21,22 @@ def _validate_callback_data(data):
         raise ValidationError
 
 
+def _validate_order_callbacks(order: Order):
+    try:
+        order.paymentcallback_set.get(status='success')
+        raise ValidationError(_("The order is successfully placed"))
+    except ObjectDoesNotExist:
+        return order
+
+
 def get_payment_url(user: User):
     order = get_new_order(user=user)
+    order = _validate_order_callbacks(order=order)
+    callback, _ = PaymentCallback.objects.get_or_create(order=order, data="")
     settings.LIQPAY_DATA.update({
         "amount": str(order.total_price),
-        "order_id": str(order.pk)})
-    return liqpay.checkout_url(settings.LIQPAY_DATA)
+        "order_id": str(callback.pk)})
+    return dict(url=liqpay.checkout_url(settings.LIQPAY_DATA))
 
 
 def manage_payment_callback(data: dict) -> dict:
@@ -36,7 +46,7 @@ def manage_payment_callback(data: dict) -> dict:
         PaymentCallback.objects.get(data=data['data'])
         raise ValidationError(_('This data has already been saved'))
     except ObjectDoesNotExist:
-        return {"order": res['order_id'],
+        return {"pk": res['order_id'],
                 "action": res['action'],
                 "status": res['status'],
                 "data": data['data']}
