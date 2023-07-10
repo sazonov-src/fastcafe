@@ -1,6 +1,6 @@
-/project/app_menu/migrations/
-/project/app_order/migrations/
 /project/media/
 /project/db.sqlite3
-/project/.idea/
-/project/app_checkout/migrations/
+migrations/
+/venv/
+__pycache__/
+.*
