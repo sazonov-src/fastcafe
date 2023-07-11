@@ -1,3 +1,4 @@
+from typing import Any
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -6,7 +7,7 @@ from app_menu.models import MenuItem
 
 class Order(models.Model):
 
-    user: User = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -14,9 +15,10 @@ class Order(models.Model):
     done = models.BooleanField(default=False)
 
     objects = models.Manager()
-
+    orderitem_set: Any
+    
     def __repr__(self):
-        return f"<{self.user.username} {self.status}>"
+        return f"<{self.user.username}>"
 
     @property
     def order_items(self):
@@ -32,9 +34,9 @@ class Order(models.Model):
 
     
 class OrderItem(models.Model):
-    order: Order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    item: MenuItem = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
-    quantity: int = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
 
     objects = models.Manager()
 
