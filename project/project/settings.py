@@ -29,11 +29,9 @@ SECRET_KEY = 'django-insecure-mai%w%a6q@x#sid!m0j5uz)a)0!v2_g-e)_c(zf#8&psmk)wlk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'c2d7-109-108-232-220.ngrok-free.app',
-]
+ALLOWED_HOSTS = []
 
-CSRF_TRUSTED_ORIGINS = ['https://c2d7-109-108-232-220.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = []
 
 # Application definition
 
@@ -210,12 +208,11 @@ SOCIAL_AUTH_DISCONNECT_PIPELINE = (
 )
 
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
 LIQPAY_PUBLIC_KEY = "sandbox_i63394948889"
 LIQPAY_SECRET_KEY = env('LIQPAY_SECRET_KEY')
 LIQPAY_DATA = {
-    "result_url": f"https://{ALLOWED_HOSTS[0]}/api/v1/new_order/pay_callback/",
-    "server_url": f"https://{ALLOWED_HOSTS[0]}/api/v1/new_order/pay_callback/",
+    "u": "https://{}/api/v1/new_order/pay_callback/",
+    "server_url": "https://{}/api/v1/new_order/pay_callback/",
     "action": "pay",
     "amount": "1",
     "currency": "UAH",

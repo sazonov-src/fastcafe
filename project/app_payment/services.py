@@ -33,6 +33,9 @@ def get_payment_url(user: User):
     order = get_new_order(user=user)
     order = _validate_order_callbacks(order=order)
     callback, _ = PaymentCallback.objects.get_or_create(order=order, data="")
+    host = settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else "localhost"
+    settings.LIQPAY_DATA['result_url'].format(host)
+    settings.LIQPAY_DATA['server_url'].format(host)
     settings.LIQPAY_DATA.update({
         "amount": str(order.total_price),
         "order_id": str(callback.pk)})
