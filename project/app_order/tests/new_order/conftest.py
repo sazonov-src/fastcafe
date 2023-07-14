@@ -17,11 +17,12 @@ def user():
 def another_user():
     return mixer.blend(User)
 
-
 @pytest.fixture
 def menu_item():
     return mixer.blend("app_menu.menuitem")
 
-
+@pytest.fixture
+def an_menu_item():
+    return mixer.blend("app_menu.menuitem")
 
 
