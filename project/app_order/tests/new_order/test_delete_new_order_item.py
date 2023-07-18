@@ -16,4 +16,3 @@ def test_delete_order_with_two_items(order_with_two_items):
     order_item = order_with_two_items.orderitem_set.first()
     delete_new_order_item(order_item=order_item)
     order_with_two_items.orderitem_set.first()
-
