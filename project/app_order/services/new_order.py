@@ -21,7 +21,7 @@ def update_or_create_new_order(
         quantity: int = 1
 ) -> tuple[tuple[Order, bool], tuple[OrderItem, bool]]:
 
-    order = Order.objects.get_or_create(user=user, created=False)
+    order = Order.objects.get_or_create(user=user, checkout__isnull=True) 
     order_item = OrderItem.objects.update_or_create(
         order=order[0],
         item=item,
@@ -37,15 +37,10 @@ def delete_new_order_item(order_item: OrderItem) -> None:
 
 
 def get_new_order(user: User) -> Order:
-    return get_object_or_404(Order, user=user.pk, created=False)
+    return get_object_or_404(Order, user=user.pk)
 
 
 def get_new_orderitems_queryset(user: User):
     return get_new_order(user).orderitem_set.all()
-
-
-def set_created_status_new_order(order: Order):
-    order.created = True
-    order.save()
 
 

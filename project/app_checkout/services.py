@@ -14,7 +14,6 @@ def get_new_checkout(user: User) -> Checkout:
 def create_new_checkout(user: User, **kwargs) -> Checkout:
     order = get_new_order(user)
     checkout = Checkout.objects.create(order=order, **kwargs)
-    order.created = True
     order.save()
     return checkout
 

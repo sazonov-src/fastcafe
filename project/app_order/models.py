@@ -8,10 +8,8 @@ from app_menu.models import MenuItem
 class Order(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_paid = models.BooleanField(default=False)
     done = models.BooleanField(default=False)
 
     objects = models.Manager()
