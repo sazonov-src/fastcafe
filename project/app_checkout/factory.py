@@ -10,9 +10,13 @@ class ChackoutFactory:
     def __init__(self, user: User, menu_item: MenuItem):
         self.user = user
         self.menu_item = menu_item
-        self.order = update_or_create_new_order(
+        self.order, self.is_created = self.create_new_order()
+
+
+    def create_new_order(self):
+        return update_or_create_new_order(
             user=self.user, 
-            item=self.menu_item)[0][0] 
+            item=self.menu_item)[0] 
     
     
     def create_new_checkout(self, **kwargs):
