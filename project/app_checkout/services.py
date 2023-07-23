@@ -11,7 +11,7 @@ def get_new_checkout(user: User) -> Checkout:
     return get_object_or_404(Checkout, order=order)
 
 
-def get_create_or_update_checkout_data(user: User, **data):
+def get_create_checkout_data(user: User, **data):
     order_pk = get_new_order(user).pk
     return data | dict(order=order_pk)
 

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from app_checkout.models import Checkout
-from app_checkout.services import get_create_or_update_checkout_data
+from app_checkout.services import get_create_checkout_data
 
 from app_menu.models import MenuItem
 from app_order.services.new_order import update_or_create_new_order
@@ -20,7 +20,7 @@ class ChackoutFactory:
     
     
     def create_new_checkout(self, **kwargs):
-        data=get_create_or_update_checkout_data(user=self.user, **kwargs)
+        data=get_create_checkout_data(user=self.user, **kwargs)
         data.pop("order")
         checkout = Checkout(order=self.order, **data)
         checkout.full_clean()
