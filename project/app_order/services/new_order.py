@@ -17,6 +17,10 @@ class NewOrder:
     def __call__(self):
         return Order.objects.get(user=self._user)
     
+
+    def __getattr__(self, name):
+        return getattr(self(), name)
+    
     
     def update_or_create(self, item: MenuItem, quantity: int = 1):
         order = Order.objects.get_or_create(user=self._user, checkout__isnull=True) 

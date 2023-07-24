@@ -26,7 +26,7 @@ def test_not_phone(checkout_factory):
 
 def test_checkout_vs_new_order(checkout_default):
     old_pk = checkout_default.order.pk
-    new_pk, is_created = checkout_default.create_new_order()
-    assert old_pk != new_pk
-    assert is_created is True
+    order_obj = checkout_default.create_new_order()
+    assert order_obj.order != old_pk
+    assert order_obj.is_order_create is True
 
