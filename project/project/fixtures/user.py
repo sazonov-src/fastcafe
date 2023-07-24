@@ -8,6 +8,6 @@ def user(mixer):
 
 
 @pytest.fixture
-def another_user(mixer):
+def an_user(mixer):
     return mixer.blend("auth.user")
 
