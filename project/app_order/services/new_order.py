@@ -13,6 +13,10 @@ class NewOrder:
     def __init__(self, user: User) -> None:
         self._user = user
     
+       
+    def __call__(self):
+        return Order.objects.get(user=self._user)
+    
     
     def update_or_create(self, item: MenuItem, quantity: int = 1):
         order = Order.objects.get_or_create(user=self._user, checkout__isnull=True) 
@@ -24,18 +28,16 @@ class NewOrder:
 
     
     def delete(self, item: MenuItem) -> None:
-        order_items = self.get().orderitem_set.all()
+        order_items = self().orderitem_set.all()
         order_item = order_items.get(item=item)
         if len(order_items) == 1:
             return order_item.order.delete()[0]
         return order_item.delete()[0]
 
 
-    def get(self):
-        return Order.objects.get(user=self._user)
+    @property
+    def orderitems_queryset(self):
+        return self().orderitem_set.all()
 
     
-    def orderitems_queryset(self):
-        return self.get().orderitem_set.all()
-
 
