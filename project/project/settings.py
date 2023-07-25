@@ -211,7 +211,7 @@ SOCIAL_AUTH_DISCONNECT_PIPELINE = (
 LIQPAY_PUBLIC_KEY = "sandbox_i63394948889"
 LIQPAY_SECRET_KEY = env('LIQPAY_SECRET_KEY')
 LIQPAY_DATA = {
-    "u": "https://{}/api/v1/new_order/pay_callback/",
+    "result_url": "https://{}/api/v1/new_order/pay_callback/",
     "server_url": "https://{}/api/v1/new_order/pay_callback/",
     "action": "pay",
     "amount": "1",
