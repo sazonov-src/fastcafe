@@ -5,10 +5,11 @@ pytestmark = [pytest.mark.django_db]
 
 
 def test_default_checkout(checkout_factory):
+    current_pk = checkout_factory.order.pk
     checkout = checkout_factory.create_new_checkout(
         user_name="Vasia",
         phone="+380-97-777-77-77")
-    assert checkout_factory.order.pk == checkout.order.pk
+    assert current_pk == checkout.order.pk
     assert checkout.cart_pay is True
     
     
@@ -24,9 +25,11 @@ def test_not_phone(checkout_factory):
             user_name="Vasia")
 
 
-def test_checkout_vs_new_order(checkout_default):
-    old_pk = checkout_default.order.pk
-    order_obj = checkout_default.create_new_order()
-    assert order_obj.order != old_pk
-    assert order_obj.is_order_create is True
+def test_checkout_vs_new_order(checkout_factory):
+    old_pk = checkout_factory.order.pk
+    checkout_factory.create_new_checkout(
+        user_name="Vasia",
+        phone="+380-97-777-77-77")
+    checkout_factory.create_new_order()
+    assert checkout_factory.order.pk != old_pk
 

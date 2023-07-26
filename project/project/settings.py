@@ -208,7 +208,7 @@ SOCIAL_AUTH_DISCONNECT_PIPELINE = (
 )
 
 # SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-LIQPAY_PUBLIC_KEY = "sandbox_i63394948889"
+LIQPAY_PUBLIC_KEY = "sandbox_i25627412306"
 LIQPAY_SECRET_KEY = env('LIQPAY_SECRET_KEY')
 LIQPAY_DATA = {
     "result_url": "https://{}/api/v1/new_order/pay_callback/",

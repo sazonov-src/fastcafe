@@ -1,10 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.utils.translation import gettext_lazy as _
 from liqpay import LiqPay
-from rest_framework.exceptions import ValidationError
 
 from app_order.services.new_order import NewOrder
-from app_payment.models import PaymentCallback
 from project import settings
 
 
@@ -16,29 +14,24 @@ class NewPayment:
 
     def __init__(self, user):
         self._user = user
-        self._order = NewOrder(user=user)
+        self._order = NewOrder(user=user)()
         
 
-    def _validate_order_callbacks(self):
-        try:
-            self._order().paymentcallback_set.get(status='success')
-            raise ValidationError(_("The order is successfully placed"))
-        except ObjectDoesNotExist:
-            return self._order()
+    def is_payment(self):
+        pass
 
-
+     
     def get_payment_url(self):
-        order = self._validate_order_callbacks()
-        callback, _ = PaymentCallback.objects.get_or_create(
-             order=self._order(), data="")
-        host = settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else "localhost"
-        settings.LIQPAY_DATA['result_url'].format(host)
-        settings.LIQPAY_DATA['server_url'].format(host)
         settings.LIQPAY_DATA.update({
-            "amount": str(order.total_price),
-            "order_id": str(callback.pk)})
+            "amount": str(self._order.total_price),
+            "order_id": str(self._order.pk)})
         return dict(url=self.liqpay.checkout_url(settings.LIQPAY_DATA))
 
+    
+    def get_status_info(self):
+        return self.liqpay.api("request", {
+            "action": "status",
+            "order_id": self._order.pk })
 
 
 #

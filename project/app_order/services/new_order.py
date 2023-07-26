@@ -15,7 +15,7 @@ class NewOrder:
     
        
     def __call__(self):
-        return Order.objects.get(user=self._user)
+        return Order.objects.get(user=self._user, checkout__isnull=True)
     
 
     def __getattr__(self, name):
