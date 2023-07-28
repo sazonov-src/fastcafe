@@ -1,18 +1,35 @@
 import pytest
 
-from app_payment.tests.factory import PeymentFactory
+from app_payment.services import NewPayment
+
 
 pytestmark = [pytest.mark.django_db]
 
-@pytest.fixture
-def payment_factory(user, menu_item):
-    return PeymentFactory(user=user, menu_item=menu_item)
 
 @pytest.fixture
-def payment_error(payment_factory):
-    return payment_factory
+def payment_checkout(checkout_default):
+    return NewPayment(checkout_default.order)
+
 
 @pytest.fixture
-def payment_success(payment_factory):
-    payment_factory.checkout()
-    return payment_factory
+def payment_not_checkout(checkout_factory):
+    return NewPayment(checkout_factory.order)
+
+
+@pytest.fixture
+def payment_error(checkout_factory):
+    order_obj = checkout_factory.create_new_order()
+    checkout_factory.create_new_checkout(
+            user_name="Vasia",
+            phone="+380984445577")    
+    return NewPayment(order_obj.order)
+
+
+
+@pytest.fixture
+def payment_ok(checkout_default):
+    order_obj = checkout_default.create_new_order()
+    checkout_default.create_new_checkout(
+        user_name="Vasia",
+        phone="+380984445577")    
+    return NewPayment(order_obj.order)

@@ -1,8 +1,8 @@
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from liqpay import LiqPay
+from app_order.models import Order
 
-from app_order.services.new_order import NewOrder
 from project import settings
 
 
@@ -12,16 +12,17 @@ class NewPayment:
     liqpay = LiqPay(public_key, secret_key)
 
 
-    def __init__(self, user):
-        self._user = user
-        self._order = NewOrder(user=user)()
-        
+    def __init__(self, order):
+        self._order = Order.objects.get(pk=order) if isinstance(order, str) else order        
+     
 
     def is_payment(self):
-        pass
+        return self.get_status_info()["result"] == "ok"
 
      
     def get_payment_url(self):
+        if self.is_payment():
+            raise ValidationError(_("this order has already been paid"))
         settings.LIQPAY_DATA.update({
             "amount": str(self._order.total_price),
             "order_id": str(self._order.pk)})

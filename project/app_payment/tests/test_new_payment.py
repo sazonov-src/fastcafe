@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 import pytest
 
 
@@ -9,7 +10,8 @@ def test_get_url(payment_error):
     assert "https://" in payment_error.get_payment_url().get("url", None)
 
 
-def test_payment_success(payment_success):
-    assert payment_success.get_status_info()["result"] == "ok"
-    assert "https://" in payment_success.get_payment_url().get("url", None)
+def test_payment_success(payment_ok):
+    assert payment_ok.get_status_info()["result"] == "ok"
+    with pytest.raises(ValidationError):
+        payment_ok.get_payment_url()
     
