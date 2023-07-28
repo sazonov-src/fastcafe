@@ -21,9 +21,19 @@ class NewPayment:
 
 
     def __init__(self, order):
-        self._order = Order.objects.get(pk=order) if isinstance(order, str) else order        
+        self._order = self._get_order_with_int(order)
         if not self._order.is_checkout:
             raise NoCheckoutValidationError(_("First, place your order"))
+
+
+    def _get_order_with_int(self, order):
+        if isinstance(order, Order):
+            return order
+        try:
+            pk = int(order)
+        except ValueError:
+            raise ValidationError("This value can not be an identifier")
+        return Order.objects.get(pk=pk)
      
 
     def is_payment(self):
@@ -43,54 +53,3 @@ class NewPayment:
         return self.liqpay.api("request", {
             "action": "status",
             "order_id": self._order.pk })
-
-
-#
-# def _validate_callback_data(data):
-#     try:
-#         sign = liqpay.str_to_sign(settings.LIQPAY_SECRET_KEY + data['data'] + settings.LIQPAY_SECRET_KEY)
-#         if sign != data['signature']:
-#             raise ValidationError(_('This data is not valid'))
-#     except KeyError:
-#         raise ValidationError
-#
-#
-# def _validate_order_callbacks(order: Order):
-#     try:
-#         order.paymentcallback_set.get(status='success')
-#         raise ValidationError(_("The order is successfully placed"))
-#     except ObjectDoesNotExist:
-#         return order
-#
-#
-# def get_payment_url(user: User):
-#     order = get_new_order(user=user)
-#     order = _validate_order_callbacks(order=order)
-#     callback, _ = PaymentCallback.objects.get_or_create(order=order, data="")
-#     host = settings.ALLOWED_HOSTS[0] if settings.ALLOWED_HOSTS else "localhost"
-#     settings.LIQPAY_DATA['result_url'].format(host)
-#     settings.LIQPAY_DATA['server_url'].format(host)
-#     settings.LIQPAY_DATA.update({
-#         "amount": str(order.total_price),
-#         "order_id": str(callback.pk)})
-#     return dict(url=liqpay.checkout_url(settings.LIQPAY_DATA))
-#
-#
-# def manage_payment_callback(data: dict) -> dict:
-#     _validate_callback_data(data)
-#     res = liqpay.decode_data_from_str(data['data'])
-#     try:
-#         PaymentCallback.objects.get(data=data['data'])
-#         raise ValidationError(_('This data has already been saved'))
-#     except ObjectDoesNotExist:
-#         return {"pk": res['order_id'],
-#                 "action": res['action'],
-#                 "status": res['status'],
-#                 "data": data['data']}
-#
-#
-# def get_payment_callback_queryset(user: User):
-#     order = get_new_order(user=user)
-#     return order.paymentcallback_set.all()
-#
-#

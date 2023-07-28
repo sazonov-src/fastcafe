@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 import pytest
 
 from app_payment.services import AlreadyPayedValidationError, NewPayment, NoCheckoutValidationError
@@ -23,3 +24,12 @@ def test_payment_not_checkout(order_not_checkout):
     with pytest.raises(NoCheckoutValidationError):
         NewPayment(order_not_checkout)
 
+
+def test_payment_num(order_ok):
+    NewPayment(order_ok.pk)
+
+
+def test_payment_not_num(num="d"):
+    with pytest.raises(ValidationError):
+        NewPayment(num)
+    
