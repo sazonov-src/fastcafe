@@ -1,5 +1,6 @@
 from typing import Any
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator
 from django.db import models
 from app_menu.models import MenuItem
@@ -14,9 +15,18 @@ class Order(models.Model):
 
     objects = models.Manager()
     orderitem_set: Any
+    checkout: Any
     
     def __repr__(self):
         return f"<{self.user.username}>"
+
+    @property
+    def is_checkout(self):
+        try:
+            self.checkout
+            return True
+        except ObjectDoesNotExist:
+            return False
 
     @property
     def order_items(self):

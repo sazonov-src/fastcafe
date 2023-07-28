@@ -6,6 +6,14 @@ from app_order.models import Order
 from project import settings
 
 
+class NoCheckoutValidationError(ValidationError):
+    pass
+
+
+class AlreadyPayedValidationError(ValidationError):
+    pass
+
+
 class NewPayment:
     public_key = settings.LIQPAY_PUBLIC_KEY
     secret_key = settings.LIQPAY_SECRET_KEY
@@ -14,6 +22,8 @@ class NewPayment:
 
     def __init__(self, order):
         self._order = Order.objects.get(pk=order) if isinstance(order, str) else order        
+        if not self._order.is_checkout:
+            raise NoCheckoutValidationError(_("First, place your order"))
      
 
     def is_payment(self):
@@ -22,7 +32,7 @@ class NewPayment:
      
     def get_payment_url(self):
         if self.is_payment():
-            raise ValidationError(_("this order has already been paid"))
+            raise AlreadyPayedValidationError(_("This order has already been paid"))
         settings.LIQPAY_DATA.update({
             "amount": str(self._order.total_price),
             "order_id": str(self._order.pk)})
