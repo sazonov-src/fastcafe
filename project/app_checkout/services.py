@@ -11,10 +11,6 @@ class NewCheckout:
         return ch.objects.get(order=self._order())
 
     
-    def __getattr__(self, name):
-        return getattr(self(), name)
-
-
     @property
     def order(self):
         return self._order

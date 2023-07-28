@@ -1,3 +1,4 @@
+
 import pytest
 
 from app_checkout.factory import ChackoutFactory 
@@ -12,6 +13,7 @@ def checkout_factory(user, menu_item):
 
 @pytest.fixture
 def checkout_default(checkout_factory):
+    checkout_factory.create_new_order()
     checkout_factory.create_new_checkout(
         user_name="Vasia",
         phone="+380-97-777-77-77")
