@@ -8,7 +8,7 @@ from app_checkout.services import get_new_checkout, get_manage_checkout
 class NewCheckoutAPI(APIView):
     serializer = NewCheckoutSerializer
 
-    def get(self, request):
+    def get(self, request)
         serializer = self.serializer(
             get_new_checkout(request.user))
         return Response(serializer.data)

@@ -4,7 +4,8 @@ from django.core.cache import cache
 
 pytest_plugins = [
     "project.fixtures",
-    "app_order.fixtures"
+    "app_order.fixtures",
+    "app_checkout.fixtures",
 ]
 
 
