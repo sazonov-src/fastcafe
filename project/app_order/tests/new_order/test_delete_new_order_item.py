@@ -1,14 +1,15 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.http.response import Http404
 import pytest
 
 from app_order.services.new_order import NewOrder
 
 pytestmark = [pytest.mark.django_db]
 
+
 def test_delete_order_with_one_item(new_order: NewOrder, menu_item):
     new_order.update_or_create(menu_item)
     assert new_order.delete(menu_item) == 2
-    with pytest.raises(ObjectDoesNotExist):
+    with pytest.raises(Http404):
         new_order()
     
     
