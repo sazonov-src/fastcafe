@@ -21,5 +21,5 @@ class NewCheckoutAPI(APIView):
             data=self.new_checkout.get_create_or_update_data(**request.data))
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.validated_data)
+        return Response(serializer.data)
 
