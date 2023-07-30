@@ -1,5 +1,6 @@
 from collections import namedtuple
 from django.contrib.auth.models import User
+from rest_framework.generics import get_object_or_404
 
 from app_menu.models import MenuItem
 from app_order.models import Order, OrderItem
@@ -10,12 +11,12 @@ class NewOrder:
         "order_statuses", ("order", "is_order_create", "item", "is_item_create"))
     
     
-    def __init__(self, user: User) -> None:
+    def __init__(self, user) -> None:
         self._user = user
     
        
     def __call__(self):
-        return Order.objects.get(user=self._user, checkout__isnull=True)
+        return get_object_or_404(Order, user=self._user, checkout__isnull=True)
     
 
     def __getattr__(self, name):
@@ -33,7 +34,7 @@ class NewOrder:
     
     def delete(self, item: MenuItem) -> None:
         order_items = self().orderitem_set.all()
-        order_item = order_items.get(item=item)
+        order_item = get_object_or_404(order_items, item=item.pk)
         if len(order_items) == 1:
             return order_item.order.delete()[0]
         return order_item.delete()[0]
@@ -42,6 +43,4 @@ class NewOrder:
     @property
     def orderitems_queryset(self):
         return self().orderitem_set.all()
-
-    
 

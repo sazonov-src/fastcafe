@@ -3,7 +3,6 @@ from rest_framework.relations import PrimaryKeyRelatedField
 
 from app_order.models import *
 from app_order.services.manager import mark_order_as_done
-from app_order.services.new_order import update_or_create_new_order
 
 
 class NewOrderItemSerializer(serializers.ModelSerializer):
@@ -13,9 +12,8 @@ class NewOrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ('pk', 'item', 'quantity', 'total_price')
 
-    def save(self, **kwargs):
-        update_or_create_new_order(
-            user=kwargs['user'],
+    def save(self, new_order):
+        new_order.update_or_create(
             item=self.validated_data['item'],
             quantity=self.validated_data['quantity'])
 

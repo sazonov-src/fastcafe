@@ -3,10 +3,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from app_checkout.views import NewCheckoutAPI, ManagerCheckoutAPIView
+from app_checkout.views import NewCheckoutAPI
 from app_menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
-from app_order.views import OrderItemViewSet, OrderNewView, ManageOrderViewSet
-from app_payment.views import GetPaymentUrlAPIView, AcceptPaymentCallbackAPIView
+from app_order.views import OrderItemViewSet, OrderNewView
+from app_payment.views import GetPaymentUrlAPIView
 from . import settings
 from .view import auth_logout
 
@@ -19,8 +19,6 @@ new_order = routers.DefaultRouter()
 new_order.register(r'items', OrderItemViewSet, basename='items')
 # new_order.register(r'payment_responses', PaymentAPIResponseViewSet, basename='payment_responses')
 
-manager = routers.DefaultRouter()
-manager.register(r'', ManageOrderViewSet, basename='manager_orders')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,9 +27,8 @@ urlpatterns = [
     path('api/v1/new_order/', include(new_order.urls)),
     path('api/v1/new_order/checkout/', NewCheckoutAPI.as_view()),
     path('api/v1/new_order/pay_url/', GetPaymentUrlAPIView.as_view()),
-    path('api/v1/new_order/pay_callback/', AcceptPaymentCallbackAPIView.as_view()),
-    path('api/v1/manager/orders/', include(manager.urls)),
-    path('api/v1/manager/orders/<int:pk>/checkout', ManagerCheckoutAPIView.as_view()),
+    # path('api/v1/new_order/pay_callback/', AcceptPaymentCallbackAPIView.as_view()),
+    # path('api/v1/manager/orders/<int:pk>/checkout', ManagerCheckoutAPIView.as_view()),
 
     path(f'api/v1/auth_logout/', auth_logout),
 
