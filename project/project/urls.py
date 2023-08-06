@@ -6,7 +6,7 @@ from rest_framework import routers
 from app_checkout.views import NewCheckoutAPI
 from app_menu.views import ItemChildViewSet, ItemViewSet, CategoryViewSet
 from app_order.views import OrderItemViewSet, OrderNewView
-from app_payment.views import GetPaymentUrlAPIView
+from app_payment.views import GetPaymentUrlAPIView, PayCallbackAPIView
 from . import settings
 from .view import auth_logout
 
@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/v1/new_order/', include(new_order.urls)),
     path('api/v1/new_order/checkout/', NewCheckoutAPI.as_view()),
     path('api/v1/new_order/pay_url/', GetPaymentUrlAPIView.as_view()),
-    # path('api/v1/new_order/pay_callback/', AcceptPaymentCallbackAPIView.as_view()),
+    path('api/v1/new_order/pay_callback/', PayCallbackAPIView.as_view()),
     # path('api/v1/manager/orders/<int:pk>/checkout', ManagerCheckoutAPIView.as_view()),
 
     path(f'api/v1/auth_logout/', auth_logout),

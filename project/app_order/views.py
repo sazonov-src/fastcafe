@@ -1,12 +1,8 @@
-from rest_framework import viewsets, mixins
-from rest_framework.decorators import action
-
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.utils.formatting import re
 
 from rest_framework.views import APIView
-from rest_framework.viewsets import GenericViewSet
 
 from app_order.serializers import NewOrderSerializer, NewOrderItemSerializer 
 from app_order.services.manager import *
@@ -28,7 +24,7 @@ class OrderItemViewSet(viewsets.ModelViewSet):
         serializer.save(self.order)
 
     def perform_destroy(self, instance):
-        self.order.delete(item=instance)
+        self.order.delete(order_item=instance)
 
 
 class OrderNewView(APIView):

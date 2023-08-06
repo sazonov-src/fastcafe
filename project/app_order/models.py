@@ -16,10 +16,19 @@ class Order(models.Model):
     objects = models.Manager()
     orderitem_set: Any
     checkout: Any
-    
+
     def __repr__(self):
         return f"<{self.user.username}>"
+    
+    @property
+    def new_payment(self):
+        from app_payment.services import NewPayment
+        return NewPayment(self)
 
+    @property
+    def is_payment(self):
+        return self.new_payment.is_payment
+    
     @property
     def is_checkout(self):
         try:
@@ -40,7 +49,7 @@ class Order(models.Model):
     def count_order_items(self):
         return len(self.order_items)
 
-    
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)

@@ -1,35 +1,35 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
+from django.http.response import Http404
 import pytest
 
-from app_payment.services import AlreadyPayedValidationError, NewPayment, NoCheckoutValidationError
+from app_payment.services import AlreadyPayedValidationError, NoCheckoutValidationError
+from app_payment.tests.conftest import TstNewPayment
 
 
 pytestmark = [pytest.mark.django_db]
 
 
-def test_get_url(order_error):
-    payment_error = NewPayment(order_error)
-    assert payment_error.get_status_info()["result"] == "error"
-    assert "https://" in payment_error.get_payment_url().get("url", "")
-
-
-def test_payment_success(order_ok):
-    payment_ok = NewPayment(order_ok)
-    assert payment_ok.get_status_info()["result"] == "ok"
+def test_payment_ok(order_ok, order_ok_callback):
+    payment_ok = TstNewPayment(order=order_ok)
     with pytest.raises(AlreadyPayedValidationError):
         payment_ok.get_payment_url()
+    payment_ok.save_callbeck(order_ok_callback)
+    assert payment_ok.order.paycallback.is_payed is True
     
+def test_payment_error(order_error, order_error_callback):
+    order_error = TstNewPayment(order=order_error)
+    order_error.get_payment_url()
+    order_error.save_callbeck(order_error_callback)
+    with pytest.raises(ObjectDoesNotExist):
+        order_error.order.paycallback.is_payed 
 
-def test_payment_not_checkout(order_not_checkout):
+def test_order_not_checkout(order_not_checkout):
     with pytest.raises(NoCheckoutValidationError):
-        NewPayment(order_not_checkout)
+        TstNewPayment(order=order_not_checkout)
 
-
-def test_payment_num(order_ok):
-    NewPayment(order_ok.pk)
-
-
-def test_payment_not_num(num="d"):
-    with pytest.raises(ValidationError):
-        NewPayment(num)
-    
+def test_payment_end_get_new_order(new_order, order_ok, order_ok_callback):
+    payment_ok = TstNewPayment(order=order_ok)
+    assert new_order().pk == payment_ok.order.pk
+    payment_ok.save_callbeck(order_ok_callback)
+    with pytest.raises(Http404):
+        new_order()

@@ -33,6 +33,6 @@ def test_checkout_vs_new_order(checkout_factory):
         user_name="Vasia",
         phone="+380-97-777-77-77")
     new_order_obj = checkout_factory.create_new_order()
-    assert order_obj.order.pk != new_order_obj.order.pk
+    assert order_obj.order.pk == new_order_obj.order.pk
     
 
